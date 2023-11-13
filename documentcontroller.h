@@ -5,6 +5,12 @@
 #include <QQmlEngine>
 #include <QQuickTextDocument>
 #include <QTextDocument>
+#include <QQmlFile>
+#include <QMimeType>
+#include <QMimeDatabase>
+#include <QFile>
+
+#include <QDebug>
 
 class DocumentController : public QObject
 {
@@ -19,11 +25,24 @@ class DocumentController : public QObject
         QQuickTextDocument *keditDoc() const;
         void setKeditDoc(QQuickTextDocument*);
 
+        QTextDocument *kTextDocument() const;
+        void setKtextDocument(QTextDocument*);
+
     signals:
         void keditDocChanged();
+        void fileContentLoaded(const QString &content, int format);
+
+    public slots:
+        void openFile(const QUrl&);
+        void saveContent();
+        void createFile(const QUrl&);
 
     private:
+        QTextDocument *getKTextDocument();
+
         QQuickTextDocument *m_keditDoc;
+        QTextDocument *m_ktextDocument;
+        QUrl m_currentFileUrl;
 };
 
 #endif // DOCUMENTCONTROLLER_H

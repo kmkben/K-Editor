@@ -31,31 +31,49 @@ ApplicationWindow {
                 id: newFile
                 text: qsTr("New File")
                 enabled: true
-                onTriggered: console.log("New File") //somthing
-            }
+                icon.source: "qrc:/images/add-document.png"
 
-            MenuBarItem {
-                id: open
-                text: qsTr("Open File or Project")
-                enabled: true
                 onTriggered: {
-                    openFileDialog.open()
+                    newFileDialog.open();
                 }
+
             }
 
             MenuBarItem {
                 id: openProject
                 text: qsTr("Open Project")
                 enabled: true
+                icon.source: "qrc:/images/open-folder.png"
                 onTriggered: console.log("Opening Project ") //somthing
+            }
+
+            MenuBarItem {
+                id: open
+                text: qsTr("Open File")
+                enabled: true
+                icon.source: "qrc:/images/open-folder.png"
+                Shortcut {
+                    sequence: StandardKey.Open
+                    onActivated: openFileDialog.open()
+                }
+
+                onTriggered: {
+                    openFileDialog.open()
+                }
             }
 
             MenuBarItem {
                 id: save
                 text: qsTr("Save")
                 enabled: true
+                icon.source: "qrc:/images/save.png"
+                Shortcut {
+                    sequence: StandardKey.Save
+                    onActivated: documentController.saveContent();
+                }
+
                 onTriggered: {
-                    saveFileDialog.open();
+                    documentController.saveContent();
                 }
             }
 
@@ -63,12 +81,19 @@ ApplicationWindow {
                 id: saveAs
                 text: qsTr("Save As")
                 enabled: true
+                icon.source: "qrc:/images/saveas.png"
+                Shortcut {
+                    sequence: StandardKey.SaveAs
+                    onActivated: saveFileDialog.open()
+                }
+
                 onTriggered: console.log("Saving file as") //somthing
             }
 
             MenuBarItem {
                 id: printDoc
                 text: qsTr("Print")
+                icon.source: "qrc:/images/printer.png"
                 enabled: true
                 onTriggered: console.log("Printing doc") //somthing
             }
@@ -77,7 +102,13 @@ ApplicationWindow {
                 id: exit
                 text: qsTr("Exit")
                 enabled: true
-                onTriggered: close();
+                icon.source: "qrc:/images/exit.png"
+                Shortcut {
+                    sequence: StandardKey.Quit
+                    onActivated: Qt.quit()
+                }
+
+                onTriggered: Qt.quit()
             }
         }
 
@@ -89,27 +120,32 @@ ApplicationWindow {
                 id: undo
                 text: qsTr("Undo")
                 enabled: true
-                onTriggered: console.log("Undoing") //somthing
+                icon.source: "qrc:/images/undo.png"
+                onTriggered: textEditArea.undo();
             }
 
             MenuBarItem {
                 id: redo
                 text: qsTr("Redo")
                 enabled: true
-                onTriggered: console.log("Redoing") //somthing
+                icon.source: "qrc:/images/redo.png"
+                onTriggered: textEditArea.redo();
             }
 
             MenuBarItem {
                 id: cut
                 text: qsTr("Cut")
                 enabled: true
+                icon.source: "qrc:/images/cut.png"
                 onTriggered: textEditArea.cut();
             }
 
             MenuBarItem {
                 id: copy
                 text: qsTr("Copy")
+                icon.source: "qrc:/images/copy.png"
                 enabled: true
+
                 onTriggered: textEditArea.copy();
             }
 
@@ -117,6 +153,7 @@ ApplicationWindow {
                 id: past
                 text: qsTr("Past")
                 enabled: true
+                icon.source: "qrc:/images/paste.png"
                 onTriggered: textEditArea.paste();
             }
 
@@ -124,6 +161,7 @@ ApplicationWindow {
                 id: selectAll
                 text: qsTr("SelectAll")
                 enabled: true
+
                 onTriggered: textEditArea.selectAll();
             }
         }
@@ -132,9 +170,9 @@ ApplicationWindow {
             id: viewMenu
             title: qsTr("&View")
 
-            MenuBarItem {
+            Action {
                 id: statusBar
-                text: qsTr("Status Bar")
+                text: qsTr(" Status Bar")
                 enabled: true
                 checkable: true
                 onTriggered: console.log("Show Status Bar") //somthing
@@ -152,11 +190,12 @@ ApplicationWindow {
                 onTriggered: console.log("Change Font") //somthing
             }
 
-            MenuBarItem {
-                id: bold
+            Action {
+                id: boldAction
                 text: qsTr("Bold")
                 enabled: true
                 checkable: true
+
                 onTriggered: console.log("Bold") //somthing
             }
         }
@@ -190,14 +229,97 @@ ApplicationWindow {
 
     header: ToolBar {
         id: topToolbard
+
+        Row {
+            anchors.fill: parent
+
+            ToolButton {
+                id: newFileButon
+                icon.source: "qrc:/images/add-document.png"
+                onClicked: openFileDialog.open();
+            }
+
+            ToolButton {
+                id: openButton
+                icon.source: "qrc:/images/open-folder.png"
+                onClicked: openFileDialog.open();
+            }
+
+            ToolButton {
+                id: saveButton
+                icon.source: "qrc:/images/save.png"
+                onClicked: documentController.saveContent();
+            }
+
+            ToolButton {
+                id: saveAsButton
+                icon.source: "qrc:/images/saveas.png"
+                onClicked: saveFileDialog.open();
+            }
+
+            ToolButton {
+                id: undoButton
+                icon.source: "qrc:/images/undo.png"
+                onClicked: textEditArea.undo();
+            }
+
+            ToolButton {
+                id: redoButton
+                icon.source: "qrc:/images/redo.png"
+                onClicked: textEditArea.redo();
+            }
+
+            ToolButton {
+                id: cutButton
+                icon.source: "qrc:/images/cut.png"
+                onClicked: textEditArea.cut();
+            }
+
+            ToolButton {
+                id: copyButton
+                icon.source: "qrc:/images/copy.png"
+                onClicked: textEditArea.copy();
+            }
+
+            ToolButton {
+                id: pasteButton
+                icon.source: "qrc:/images/paste.png"
+                onClicked: textEditArea.paste();
+            }
+
+            ToolButton {
+                id: printButton
+                icon.source: "qrc:/images/printer.png"
+                onClicked: saveFileDialog.open();
+            }
+
+            ToolButton {
+                id: boldButton
+                icon.source: "qrc:/images/bold-text.png"
+                onClicked: textEditArea.copy();
+            }
+
+            ToolButton {
+                id: italicButton
+                icon.source: "qrc:/images/italic.png"
+                onClicked: textEditArea.paste();
+            }
+
+            ToolButton {
+                id: underlineButton
+                icon.source: "qrc:/images/underline.png"
+                onClicked: saveFileDialog.open();
+            }
+        }
     }
 
     FileDialog {
         id: openFileDialog
-        nameFilters: ["text files (*.txt)", "HTML (*.html *.htm)", "C/C++ (*.c *.cpp *.h *.hpp)", "QML (*.qml)", "JS (*.js)", "Java (*.java)"]
+        nameFilters: ["text files (*.txt)", "C/C++ (*.c *.cpp *.h *.hpp)", "HTML (*.html *.htm *.html.twig)", "QML (*.qml)", "JS (*.js)", "Java (*.java)", "PHP (*.php)"]
         fileMode: FileDialog.OpenFile
+        modality: "WindowModal"
         onAccepted: {
-            // Load File
+            documentController.openFile(selectedFile);
         }
         onRejected: {
             // skip opening
@@ -206,7 +328,7 @@ ApplicationWindow {
 
     FileDialog {
         id: saveFileDialog
-        nameFilters: ["text files (*.txt)", "HTML (*.html *.htm)", "C/C++ (*.c *.cpp *.h *.hpp)", "QML (*.qml)", "JS (*.js)", "Java (*.java)"]
+        nameFilters: ["text files (*.txt)", "C/C++ (*.c *.cpp *.h *.hpp)", "HTML (*.html *.htm *.html.twig)", "QML (*.qml)", "JS (*.js)", "Java (*.java)", "PHP (*.php)"]
         fileMode: FileDialog.SaveFile
         onAccepted: {
             // Save File
@@ -216,32 +338,67 @@ ApplicationWindow {
         }
     }
 
+    FileDialog {
+        id: newFileDialog
+        fileMode: FileDialog.SaveFile
+        nameFilters: ["text files (*.txt)", "C/C++ (*.c *.cpp *.h *.hpp)", "HTML (*.html *.htm *.html.twig)", "QML (*.qml)", "JS (*.js)", "Java (*.java)", "PHP (*.php)"]
+        title: "Create new file"
+
+        onAccepted: {
+
+        }
+
+        onAcceptLabelChanged: {
+
+        }
+
+        onRejected: {
+
+        }
+    }
+
     FolderDialog {
         id: openFolderDialog
     }
 
 
     DocumentController {
+        id: documentController
+        keditDoc: textEditArea.textDocument
 
-    }
-
-    TextArea {
-        id: textEditArea
-        width: parent.width
-        height: parent.height
-        anchors.top: topToolbard.bottom
-        anchors.bottom: root.bottom
-        textFormat: Qt.RichText
-        background: Rectangle {
-            width: parent.width
-            height: parent.height
-            color: "white"
+        onFileContentLoaded: function(content, format) {
+            textEditArea.textFormat = format;
+            textEditArea.text = content;
         }
-        selectByMouse: true
-        selectByKeyboard: true
-        persistentSelection: true
-        Component.onCompleted: forceActiveFocus()
     }
+
+    ScrollView {
+        id: scrollView
+        anchors.fill: parent
+
+        TextArea {
+            id: textEditArea
+            width: parent.width
+            //height: parent.height
+            anchors.top: topToolbard.bottom
+            anchors.bottom: root.bottom
+            textFormat: Qt.RichText
+            background: Rectangle {
+                width: parent.width
+                height: parent.height
+                color: "white"
+            }
+            selectByMouse: true
+            selectByKeyboard: true
+            persistentSelection: true
+            clip: true
+            wrapMode: Text.WordWrap
+
+            Component.onCompleted: forceActiveFocus()
+        }
+
+    }
+
 
     footer: ToolBar {
         id: bottomToolBar
